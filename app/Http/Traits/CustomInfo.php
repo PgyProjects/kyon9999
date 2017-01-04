@@ -17,7 +17,6 @@ trait CustomInfo
             ],
             'name' => [
                 'show' => '姓名',
-                'search' => "name like CONCAT('%', ?, '%')"
             ],
             'idCard' => [
                 'show' => '身份证号',
@@ -101,4 +100,14 @@ trait CustomInfo
         $this->fields_create = [];
         $this->fields_show = [];
     }
+
+    protected function builder()
+    {
+        $model = new $this->model;
+        switch ($this->mark) {
+//            case 'verify' : return $model->
+        }
+
+    }
+
 }

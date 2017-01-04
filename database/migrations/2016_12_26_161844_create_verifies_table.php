@@ -14,7 +14,11 @@ class CreateVerifiesTable extends Migration
     public function up()
     {
         Schema::create('verifies', function (Blueprint $table) {
-            $table->increments('id');
+            $table->integer('customer_id')->unique()->comment('客户id');
+            $table->dateTime('verify_at')->comment('审核时间');
+            $table->integer('verify_by')->defalut('0')->comment('审核员,默认为0,无审核员');
+            $table->string('comment')->nullable()->comment('备注');
+            $table->integer('status')->defalut(0)->comment('审核状态');
             $table->timestamps();
         });
     }

@@ -11,9 +11,9 @@
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
+Route::get('/', function () {
+    return view('backstage.starter.starter');
+});
 
 Route::post('/login', 'LoginController@login');
 
@@ -34,7 +34,7 @@ Route::get('dd','ManagerController@nav');
 Route::get('dd2','ManagerController@time_delay');
 
 
-Route::group(['prefix'=>'Admin', 'middleware'=>'auth'], function(){
+Route::group(['prefix'=>'admin', 'middleware'=>'auth'], function(){
     Route::resource('verify','VerifyController');
 
     Route::resource('loan','LoanController');
@@ -45,3 +45,13 @@ Route::group(['prefix'=>'Admin', 'middleware'=>'auth'], function(){
 Route::post('commend/{id}','CommendController@makeQR');
 
 Route::post('num');
+
+
+
+Route::group(['prefix' => 'test'], function(){
+    Route::any('overdueList','TestController@overdueList');
+    Route::any('duntest','DunController@index');
+});
+
+
+

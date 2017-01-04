@@ -19,8 +19,9 @@ class CommendController extends Controller
     private function doMake($id)
     {
         $this->url = md5("?id=".$id);
+        $url = 'http://test.pgyxwd.com/commend'.$this->url;
         $QRimg = QrCode::format('png')->size(516)->margin(10)->errorCorrection('H')
-            ->generate('http://test.pgyxwd.com/commend'.$token);
+            ->generate($url);
         return array('url'=>$url, 'QRimg' => base64_encode($QRimg));
     }
 

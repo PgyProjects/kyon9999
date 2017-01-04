@@ -8,7 +8,8 @@ use Route;
 abstract class ResourceController extends Controller
 {
     // 对应的模型 -> 表示这个Controller是对哪个Model进行单表操作的
-    protected $model;
+
+    public $model;
 
     public $controller_name;
 
@@ -29,6 +30,13 @@ abstract class ResourceController extends Controller
 
     // 声明index方法对应的view页面路径
     public $path;
+
+    // 当前登录用户
+    public $manager;
+
+    //页面where条件
+    public $where = [];
+    public $whereRaw = '';
 
     // 构造方法
     public function __construct()
@@ -77,8 +85,10 @@ abstract class ResourceController extends Controller
      */
     public function index(Request $request)
     {
+
         $model = new $this->model;
-        $builder = $model->orderBy('id', 'desc');
+
+        $builder = $this->query($model);
 
         $input = $request->all();
         foreach ($input as $field => $value) {
@@ -91,9 +101,11 @@ abstract class ResourceController extends Controller
             $search = $this->fields_all[$field];
             $builder->whereRaw($search['search'], [$value]);
         }
-        $models = $builder->paginate(20);
+//        $models = $builder->paginate(20);
+        $models = $builder->get();
 
-        return view($this->path.'/lists', [
+        return $models;
+        return view($this->path . '/lists', [
             'models' => $models,
         ]);
     }
@@ -105,7 +117,7 @@ abstract class ResourceController extends Controller
      * @param null $arr
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create($arr=null)
+    public function create($arr = null)
     {
 //        return view($this->path.'/add', [$arr]);
     }
@@ -115,7 +127,7 @@ abstract class ResourceController extends Controller
     {
         $model = new $this->model;
         $model->fill($request->all())->save();
-        return Redirect::to(action($this->controller_name.'@index'));
+        return Redirect::to(action($this->controller_name . '@index'));
     }
 
     //edit方法
@@ -123,17 +135,16 @@ abstract class ResourceController extends Controller
     {
         $model = new $this->model;
         $model = $model->find($id);
-        return view($this->path.'/edit', compact('model'));
+        return view($this->path . '/edit', compact('model'));
     }
 
     //update方法
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $model = new $this->model;
         $model = $model->find($id);
         $model->fill($request->all());
         $model->save();
-        return $this->controller_name;
         return Redirect::to(action($this->controller_name . '@index'));
     }
 
@@ -146,10 +157,14 @@ abstract class ResourceController extends Controller
         return redirect()->to(action($this->controller_name . '@index'));
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $model = new $this->model;
         $model->find($id);
 
-        return view($this->path.'/show', compact('model'));
+        return view($this->path . '/show', compact('model'));
     }
+
+//    abstract protected function query($builder);
+
 }
